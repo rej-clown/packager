@@ -1,4 +1,4 @@
-Action updatePackage(JSON context, int level) {
+Action updatePackage(Json context, int level) {
     Action result = Plugin_Continue;
 
     Call_StartForward(fwdPackageUpdate);
