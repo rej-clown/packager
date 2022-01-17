@@ -7,7 +7,7 @@
 
 public Plugin myinfo = 
 {
-	name = "Json-Packager",
+	name = "Packager <json>",
 	author = "rej.chev",
 	description = "...",
 	version = "1.1.0",
