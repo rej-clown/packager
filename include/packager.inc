@@ -8,13 +8,6 @@ enum ContextLevels {
     CALL_DEFAULT
 };
 
-#if defined JSON_MACRO
-    #define asJSON(%0)  view_as<JSON>(%0)
-    #define asJSONO(%0) view_as<JSONObject>(%0)
-    #define asJSONA(%0) view_as<JSONArray>(%0)
-    #define asJSONK(%0) view_as<JSONObjectKeys>(%0)
-#endif
-
 #if defined UTIL_MACRO
     #define STATUS_LENGTH       16
     #define TEAM_LENGTH         64

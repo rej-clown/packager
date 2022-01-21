@@ -1,5 +1,5 @@
-Action context(Handle plugin, int iClient, const char[] artifact, JSON value, any level) {
-    JSONObject ctx = new JSONObject();
+Action context(Handle plugin, int iClient, const char[] artifact, Json value, any level) {
+    JsonObject ctx = asJSONO(new Json("{}"));
 
     if(level != CALL_IGNORE) {
         ctx.SetBool("isArtifact", artifact[0] != 0);
@@ -12,8 +12,8 @@ Action context(Handle plugin, int iClient, const char[] artifact, JSON value, an
         ctx.SetInt("caller", view_as<int>(plugin));
     }
 
-    JSON obj;
-    JSON temp;
+    Json obj;
+    Json temp;
     Action ok;
 
     static char szBuffer[PREFIX_LENGTH];
@@ -34,11 +34,11 @@ Action context(Handle plugin, int iClient, const char[] artifact, JSON value, an
 
 #if defined DEBUG
         if(temp)
-            temp.ToString(valve, sizeof(valve), 0);
+            temp.ToString(valve, sizeof(valve), JSON_INDENT(4));
 
         DWRITE("%s: context(temp): \
                 \n\t\t\t\tClient: %N \
-                \n\t\t\t\tBuffer: %s", DEBUG, iClient, (temp) ? valve : "");
+                \n\t\t\t\tBuffer: \n%s", DEBUG, iClient, (temp) ? valve : "");
 #endif
 
         if(temp || artifact[0])
@@ -62,19 +62,19 @@ Action context(Handle plugin, int iClient, const char[] artifact, JSON value, an
         }
 
         if(!obj)
-            packager.Remove(szBuffer);
-        else packager.Set(szBuffer, obj);
+            asJSONO(packager).Remove(szBuffer);
+        else asJSONO(packager).Set(szBuffer, obj);
     }
 
     delete ctx;
     delete obj;
 
 #if defined DEBUG
-    asJSON(packager).ToString(valve, sizeof(valve), 0);
+    packager.ToString(valve, sizeof(valve), JSON_INDENT(4));
 
     DWRITE("%s: context(): \
             \n\t\t\t\tClient: %N \
-            \n\t\t\t\tBuffer: %s", DEBUG, iClient, valve);
+            \n\t\t\t\tBuffer: \n%s", DEBUG, iClient, valve);
 #endif
 
     return ok;

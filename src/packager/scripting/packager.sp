@@ -1,23 +1,22 @@
 #pragma newdecls required
 
-#define JSON_MACRO
 #define UTIL_MACRO
 
-#include <ripext>
+#include <jansson> // v. 1.4.0 +
 #include <packager>
 
 public Plugin myinfo = 
 {
-	name = "JSON Packager",
+	name = "Packager <json>",
 	author = "rej.chev",
 	description = "...",
-	version = "1.0.0",
+	version = "1.1.0",
 	url = "discord.gg/ChTyPUG"
 };
 
 bool g_bLate;
 
-JSONObject packager;
+Json packager;
 
 GlobalForward
     fwdPackageUpdate_Post,
@@ -64,14 +63,14 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 }
 
 bool Initialization(int iClient, const char[] auth = "STEAM_ID_SERVER") {
-    JSONObject obj;
+    Json obj;
 
     if(pckg_HasPackage(iClient))
         pckg_SetPackage(iClient, obj, -1);
     
-    obj = new JSONObject();
-    obj.SetString("auth", auth);
-    obj.SetInt("uid", (iClient) ? GetClientUserId(iClient) : 0);
+    obj = new Json("{}");
+    asJSONO(obj).SetString("auth", auth);
+    asJSONO(obj).SetInt("uid", (iClient) ? GetClientUserId(iClient) : 0);
 
     bool success = pckg_SetPackage(iClient, obj, -1);
     delete obj;
@@ -80,7 +79,7 @@ bool Initialization(int iClient, const char[] auth = "STEAM_ID_SERVER") {
 }
 
 public void OnPluginStart() {
-    packager = new JSONObject();
+    packager = new Json("{}");
 
     if(g_bLate) {
         g_bLate = false;

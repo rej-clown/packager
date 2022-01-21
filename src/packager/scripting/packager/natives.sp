@@ -2,8 +2,8 @@ public any Native_GetPackage(Handle h, int a) {
     static char index[4];
     FormatEx(index, sizeof(index), "%d", GetNativeCell(1));
 
-    if(packager.HasKey(index))
-        return packager.Get(index);
+    if(asJSONO(packager).HasKey(index))
+        return asJSONO(packager).Get(index);
     
     return 0;
 }
@@ -15,7 +15,7 @@ public any Native_SetPackage(Handle h, int a) {
 
 // bool(iClient)
 public any Native_HasPackage(Handle h, int a) {
-    return packager.HasKey(IndexToChar(GetNativeCell(1)));
+    return asJSONO(packager).HasKey(IndexToChar(GetNativeCell(1)));
 }
 
 // bool(iClient) : "auth"?
@@ -23,8 +23,8 @@ public any Native_IsVerified(Handle h, int a) {
     int iClient = GetNativeCell(1);
     bool ver;
 
-    JSONObject obj;
-    if((obj = asJSONO(pckg_GetPackage(iClient))) != null && obj.HasKey("auth") && !obj.IsNull("auth")) {
+    JsonObject obj;
+    if((obj = asJSONO(pckg_GetPackage(iClient))) != null && obj.HasKey("auth") && !JSON_IS_NULL(obj.GetType("auth"))) {
         char auth[64];
         auth = GetClientAuthIdEx(iClient);
 
@@ -74,11 +74,11 @@ public any Native_GetArtifact(Handle h, int a) {
     static char artifact[64];
     GetNativeString(2, artifact, sizeof(artifact));
 
-    JSONObject client;
+    JsonObject client;
     client = asJSONO(pckg_GetPackage(iClient));
     
-    JSON obj;
-    if(client.HasKey(artifact) && !client.IsNull(artifact))
+    Json obj;
+    if(client.HasKey(artifact) && !JSON_IS_NULL(client.GetType(artifact)))
         obj = client.Get(artifact);
 
     delete client;
@@ -94,10 +94,10 @@ public any Native_HasArtifact(Handle h, int a) {
     static char artifact[64];
     GetNativeString(2, artifact, sizeof(artifact));
 
-    JSONObject client;
+    JsonObject client;
     client = asJSONO(pckg_GetPackage(iClient));
     
-    bool has = client.HasKey(artifact) && !client.IsNull(artifact);
+    bool has = client.HasKey(artifact) && !JSON_IS_NULL(client.GetType(artifact));
 
     delete client;
     return has;
