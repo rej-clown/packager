@@ -2,7 +2,7 @@
 
 #define UTIL_MACRO
 
-#include <jansson> // v. 1.4.0 +
+#include <jansson>
 #include <packager>
 
 public Plugin myinfo = 
