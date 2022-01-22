@@ -18,9 +18,9 @@ for dir in "${derictories[@]}"; do
 
     cd $module
     echo $PWD
-    
-    tar -czvf ${module_name}-${BUILD_NUMBER}.tar.gz *
-    cp ${module_name}-${BUILD_NUMBER}.tar.gz ../
+
+    zip -r ${module_name}-${BUILD_NUMBER}.zip *
+    cp ${module_name}-${BUILD_NUMBER}.zip ../
 
     cd ../
     echo $PWD
