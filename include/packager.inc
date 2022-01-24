@@ -3,11 +3,6 @@
 #endif
 #define _packager_included
 
-enum ContextLevels {
-    CALL_IGNORE = -1,
-    CALL_DEFAULT
-};
-
 #if defined UTIL_MACRO
     #define STATUS_LENGTH       16
     #define TEAM_LENGTH         64
@@ -17,17 +12,18 @@ enum ContextLevels {
     #define MAX_LENGTH          512
 #endif
 
-forward void        pckg_OnPackageAvailable(int iClient);
-forward Action      pckg_OnPackageUpdate(Handle ctx, any &level);
-forward void        pckg_OnPackageUpdate_Post(Handle ctx, any level);
+forward void            pckg_OnPackageAvailable(int iClient);
+// forward Action      pckg_OnPackageUpdate(Handle ctx, any &level);
+// forward void        pckg_OnPackageUpdate_Post(Handle ctx, any level);
+forward void            pckg_OnPackageUpdated(Handle plugin, int iClient);
 
 native Handle       pckg_GetPackage(int iClient);
-native bool         pckg_SetPackage(int iClient, Handle value, any repLevel);
+native bool         pckg_SetPackage(int iClient, Handle value);
 native bool         pckg_HasPackage(int iClient);
 native bool         pckg_IsVerified(int iClient);
 
-native bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value, any repLevel);
-native bool         pckg_RemoveArtifact(int iClient, const char[] artifact, any repLevel);
+native bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value);
+native bool         pckg_RemoveArtifact(int iClient, const char[] artifact);
 native Handle       pckg_GetArtifact(int iClient, const char[] artifact);
 native bool         pckg_HasArtifact(int iClient, const char[] artifact);
 

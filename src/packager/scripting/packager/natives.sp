@@ -10,7 +10,15 @@ public any Native_GetPackage(Handle h, int a) {
 
 // bool(iClient, Handle value, int level)
 public any Native_SetPackage(Handle h, int a) {
-    return context(h, GetNativeCell(1), NULL_STRING, asJSON(GetNativeCell(2)), GetNativeCell(3)) < Plugin_Handled;
+    Json o;
+    if((o = asJSON(GetNativeCell(2))) == null || JSON_TYPE_EQUAL(o, JSON_NULL))
+        return 0;
+    
+    asJSONO(packager).Set(IndexToChar(GetNativeCell(1)), o);
+
+    OnPackageUpdated(h, GetNativeCell(1));
+    return 1;
+    // return context(h, GetNativeCell(1), NULL_STRING, asJSON(GetNativeCell(2)), GetNativeCell(3)) < Plugin_Handled;
 }
 
 // bool(iClient)
@@ -49,7 +57,16 @@ public any Native_SetArtifact(Handle h, int a) {
     static char artifact[PREFIX_LENGTH];
     GetNativeString(2, artifact, sizeof(artifact));
 
-    return context(h, GetNativeCell(1), artifact, asJSON(GetNativeCell(3)), GetNativeCell(4)) < Plugin_Handled;
+    Json o = asJSON(pckg_GetPackage(iClient));
+    asJSONO(o).Set(artifact, asJSON(GetNativeCell(3)));
+    pckg_SetPackage(iClient, o);
+
+    delete o;
+
+    OnPackageUpdated(h, iClient);
+
+    return true;
+    // return context(h, GetNativeCell(1), artifact, asJSON(GetNativeCell(3)), GetNativeCell(4)) < Plugin_Handled;
 }
 
 // bool(int iClient, const char[] artifact, int repLevel)
@@ -62,7 +79,15 @@ public any Native_Remove(Handle h, int a) {
     static char artifact[64];
     GetNativeString(2, artifact, sizeof(artifact));
 
-    return context(h, GetNativeCell(1), artifact, null, GetNativeCell(3)) < Plugin_Handled;
+    Json o = asJSON(pckg_GetPackage(iClient));
+    asJSONO(o).Remove(artifact);
+    pckg_SetPackage(iClient, o);
+
+    delete o;
+
+    OnPackageUpdated(h, iClient);
+    return true;
+    // return context(h, GetNativeCell(1), artifact, null, GetNativeCell(3)) < Plugin_Handled;
 }
 
 public any Native_GetArtifact(Handle h, int a) {

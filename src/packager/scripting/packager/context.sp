@@ -1,81 +1,52 @@
-Action context(Handle plugin, int iClient, const char[] artifact, Json value, any level) {
-    JsonObject ctx = asJSONO(new Json("{}"));
+// Action context(Handle plugin, int iClient, const char[] artifact, Json value, any level) {
+//     if(!artifact[0] && (!value || JSON_TYPE_EQUAL(value, JSON_NULL)))
+//         return Plugin_Handled;
+    
+//     Json v = asJSON(CloneHandle(value)), ctx;
 
-    if(level != CALL_IGNORE) {
-        ctx.SetBool("isArtifact", artifact[0] != 0);
-        ctx.SetInt("client", (iClient) ? GetClientUserId(iClient) : 0);
-        ctx.SetString("field", (artifact[0]) ? artifact : "model");
 
-        if(value)
-            ctx.Set((artifact[0]) ? artifact : "model", value);
-        
-        ctx.SetInt("caller", view_as<int>(plugin));
-    }
+//     // char dump[1024];
+//     // v.ToString(dump, sizeof(dump), JSON_INDENT(4));
 
-    Json obj;
-    Json temp;
-    Action ok;
+//     // LogMessage("CONTEXT (%d): \n%s", iClient, dump);    
 
-    static char szBuffer[PREFIX_LENGTH];
+//     // ctx = (new JsonBuilder("{}"))
+//     //             .SetString("part", ((artifact[0]) ? artifact : "model"))
+//     //             .SetInt("client", (iClient) ? iClient : 0)
+//     //             .Set((artifact[0]) ? artifact : "model", v)
+//     //             .SetInt("caller", view_as<int>(plugin))
+//     //             .Build();
 
-#if defined DEBUG
-    static char valve[MAX_LENGTH];
-#endif
+//     Action ok;
+//     // if(level != CALL_IGNORE && (ok = updatePackage(ctx, level)) == Plugin_Changed) {
+//     //     Json o;
+//     //     if(artifact[0] || !JSON_TYPE_EQUAL((o = asJSONO(ctx).Get((artifact[0]) ? artifact : "model")), JSON_NULL)) {
+//     //         delete v;
+//     //         v = o;
+//     //     }
 
-    if(level == CALL_IGNORE || (ok = updatePackage(ctx, level)) < Plugin_Handled) {
-        FormatEx(szBuffer, sizeof(szBuffer), "%d", iClient);
+//     //     delete o;
+//     // }
 
-        if(ok == Plugin_Changed)
-            temp =  ctx.HasKey((artifact[0]) ? artifact : "model") 
-                 ?  ctx.Get((artifact[0]) ? artifact : "model")
-                 :  null;
-        
-        else temp = (value) ? asJSON(CloneHandle(value)) : null;
+//     // delete ctx;
 
-#if defined DEBUG
-        if(temp)
-            temp.ToString(valve, sizeof(valve), JSON_INDENT(4));
+//     // if(ok > Plugin_Changed) {
+//     //     delete v;
+//     //     return ok;
+//     // }
 
-        DWRITE("%s: context(temp): \
-                \n\t\t\t\tClient: %N \
-                \n\t\t\t\tBuffer: \n%s", DEBUG, iClient, (temp) ? valve : "");
-#endif
+//     ctx = (artifact[0]) ? asJSON(pckg_GetPackage(iClient)) : v;
 
-        if(temp || artifact[0])
-            obj = (artifact[0]) ? asJSON(pckg_GetPackage(iClient)) : temp;
+//     if(artifact[0]) 
+//     {
+//         if(JSON_TYPE_EQUAL(v, JSON_NULL))
+//             asJSONO(ctx).Remove(artifact);
+//         else  
+//             asJSONO(ctx).Set(artifact, v);    
+//     }
 
-        if(artifact[0]) {
-            if(!temp)
-                asJSONO(obj).Remove(artifact);
-
-            else asJSONO(obj).Set(artifact, temp);
-
-#if defined DEBUG
-            obj.ToString(valve, sizeof(valve), 0);
-
-            DWRITE("%s: context(artifact): \
-                    \n\t\t\t\tClient: %N \
-                    \n\t\t\t\tBuffer: %s", DEBUG, iClient, valve);
-#endif
-            if(temp)
-                delete temp;
-        }
-
-        if(!obj)
-            asJSONO(packager).Remove(szBuffer);
-        else asJSONO(packager).Set(szBuffer, obj);
-    }
-
-    delete ctx;
-    delete obj;
-
-#if defined DEBUG
-    packager.ToString(valve, sizeof(valve), JSON_INDENT(4));
-
-    DWRITE("%s: context(): \
-            \n\t\t\t\tClient: %N \
-            \n\t\t\t\tBuffer: \n%s", DEBUG, iClient, valve);
-#endif
-
-    return ok;
-}
+//     asJSONO(packager).Set(IndexToChar(iClient), ctx);
+    
+//     delete ctx;
+//     return ok;
+// }

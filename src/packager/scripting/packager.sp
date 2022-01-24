@@ -10,7 +10,7 @@ public Plugin myinfo =
 	name = "Packager <json>",
 	author = "rej.chev",
 	description = "...",
-	version = "1.1.0",
+	version = "1.2.0",
 	url = "discord.gg/ChTyPUG"
 };
 
@@ -19,18 +19,14 @@ bool g_bLate;
 Json packager;
 
 GlobalForward
-    fwdPackageUpdate_Post,
     fwdPackageUpdate,
     fwdPackageAvailable;
 
 #include "packager/forwards.sp"
-#include "packager/context.sp"
+// #include "packager/context.sp"
 #include "packager/natives.sp"
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
-    #if defined DEBUG
-    DBUILD()
-    #endif
 
     CreateNative("pckg_GetPackage", Native_GetPackage);
     CreateNative("pckg_SetPackage", Native_SetPackage);
@@ -43,12 +39,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 
     fwdPackageUpdate = new GlobalForward(
-        "pckg_OnPackageUpdate", 
-        ET_Hook, Param_Cell, Param_CellByRef
-    );
-
-    fwdPackageUpdate_Post = new GlobalForward(
-        "pckg_OnPackageUpdate_Post", 
+        "pckg_OnPackageUpdated", 
         ET_Ignore, Param_Cell, Param_Cell
     );
 
@@ -63,16 +54,17 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 }
 
 bool Initialization(int iClient, const char[] auth = "STEAM_ID_SERVER") {
-    Json obj;
+    Json obj = (new JsonBuilder("{}"))
+                .SetInt(
+                    "uid", 
+                    (iClient) 
+                        ? GetClientUserId(iClient) 
+                        : 0
+                )
+                .SetString("auth", auth)
+                .Build();
 
-    if(pckg_HasPackage(iClient))
-        pckg_SetPackage(iClient, obj, -1);
-    
-    obj = new Json("{}");
-    asJSONO(obj).SetString("auth", auth);
-    asJSONO(obj).SetInt("uid", (iClient) ? GetClientUserId(iClient) : 0);
-
-    bool success = pckg_SetPackage(iClient, obj, -1);
+    bool success = pckg_SetPackage(iClient, obj);
     delete obj;
 
     return success;
@@ -91,16 +83,13 @@ public void OnPluginStart() {
     }
 }
 
-public void OnMapStart() {
-    #if defined DEBUG
-    DBUILD()
-    #endif
-
+public void OnMapStart() 
+{
     OnClientAuthorized(0, "STEAM_ID_SERVER");
 }
 
 public void OnClientAuthorized(int iClient, const char[] auth) {
-    if(iClient && (IsFakeClient(iClient) || IsClientSourceTV(iClient)))
+    if(iClient && IsClientInGame(iClient) && (IsFakeClient(iClient) || IsClientSourceTV(iClient)))
         return;
 
     if(!Initialization(iClient, auth))
