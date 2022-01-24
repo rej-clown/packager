@@ -45,8 +45,7 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .SetString("valu", "who are u?")
                     .SetFloat("pi", 3.15)
                     .Build()
-            ),
-            CALL_IGNORE
+            )
         );
 
         delete o;
@@ -61,8 +60,7 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .PushString("guse")
                     .PushFloat(3.14)
                     .Build()
-            ),
-            CALL_IGNORE
+            )
         );
 
         delete o;
