@@ -19,7 +19,7 @@ public void pckg_OnPackageAvailable(int iClient) {
     if(!iClient) {
         for(int i = 1; i <= MAXPLAYERS; i++) {
             if(!pckg_HasPackage(i))
-                pckg_SetPackage(i, (o = new Json("{}")));
+                pckg_SetPackage(i, (o = new Json("{}")), 0);
 
             delete o;
         }
@@ -45,7 +45,7 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .SetString("valu", "who are u?")
                     .SetFloat("pi", 3.15)
                     .Build()
-            )
+            ), 0
         );
 
         delete o;
@@ -60,7 +60,7 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .PushString("guse")
                     .PushFloat(3.14)
                     .Build()
-            )
+            ), 0
         );
 
         delete o;

@@ -3,29 +3,73 @@
 #endif
 #define _packager_included
 
-#if defined UTIL_MACRO
-    #define STATUS_LENGTH       16
-    #define TEAM_LENGTH         64
-    #define PREFIX_LENGTH       64
-    #define NAME_LENGTH         128
-    #define MESSAGE_LENGTH      256
-    #define MAX_LENGTH          512
-#endif
-
 forward void            pckg_OnPackageAvailable(int iClient);
-// forward Action      pckg_OnPackageUpdate(Handle ctx, any &level);
-// forward void        pckg_OnPackageUpdate_Post(Handle ctx, any level);
 forward void            pckg_OnPackageUpdated(Handle plugin, int iClient);
 
-native Handle       pckg_GetPackage(int iClient);
-native bool         pckg_SetPackage(int iClient, Handle value);
-native bool         pckg_HasPackage(int iClient);
-native bool         pckg_IsVerified(int iClient);
+methodmap Packager < Handle
+{
+    public static native bool HasPackage(int i); 
+    public static native JsonObject GetPackage(int i);
+    public static native bool SetPackage(int i, JsonObject o);
+    public static native Json GetArtifact(int i, const char[] a);
+    public static native bool HasArtifact(int i, const char[] a);
+    public static native void RemoveArtifact(int i, const char[] a);
+    public static native bool SetArtifact(int i, const char[] a, Json o);
+};
 
-native bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value);
-native bool         pckg_RemoveArtifact(int iClient, const char[] artifact);
-native Handle       pckg_GetArtifact(int iClient, const char[] artifact);
-native bool         pckg_HasArtifact(int iClient, const char[] artifact);
+// native bool Packager.HasPackage(Packager this, int i);
+
+// Возвращает пакет со всеми ключами клиента (JSONObject)
+// По-умолчанию доступны поля: "auth" - Steam2, "id" - UserId
+#pragma deprecated Use methodmap instead
+stock Handle       pckg_GetPackage(int iClient) {
+    return Packager.GetPackage(iClient);
+}
+
+// Перезаписывает пакет клиента на value (JSONObject)
+// repLevel - ContextLevels (enum)
+#pragma deprecated Use methodmap instead
+stock bool         pckg_SetPackage(int iClient, Handle value, any repLevel) {
+    Packager.SetPackage(iClient, view_as<JsonObject>(value));
+}
+
+// Существует ли пакет для клиента
+#pragma deprecated Use methodmap instead
+stock bool         pckg_HasPackage(int iClient) {
+    return Packager.HasPackage(iClient);
+}
+
+// Проверка поля "auth" на валидность
+#pragma deprecated Already removed
+stock bool         pckg_IsVerified(int iClient) {
+    return true;
+}
+
+// Добавлет артефакт к пакету клиента по ключу (JSON)
+#pragma deprecated Use methodmap instead
+stock bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value, any repLevel) {
+    return Packager.SetArtifact(iClient, artifact, view_as<Json>(value));
+}
+
+// Удаляет артефакт по ключу
+#pragma deprecated Use methodmap instead
+stock bool         pckg_RemoveArtifact(int iClient, const char[] artifact, any repLevel) {
+    Packager.RemoveArtifact(iClient, artifact);
+    return true;
+}
+
+// Возвращает артефакт по ключу (JSON)
+#pragma deprecated Use methodmap instead
+stock Handle       pckg_GetArtifact(int iClient, const char[] artifact) {
+    return Packager.GetArtifact(iClient, artifact);
+}
+
+// Проверяет наличие артефакта в пакете клиента по ключу
+#pragma deprecated Use methodmap instead
+stock bool         pckg_HasArtifact(int iClient, const char[] artifact) {
+    return Packager.HasArtifact(iClient, artifact);
+}
+
 
 public SharedPlugin __pl_packager= 
 {
@@ -37,17 +81,3 @@ public SharedPlugin __pl_packager=
     required = 0
 #endif
 };
-
-#if !defined REQUIRE_PLUGIN
-public void __pl_packager_SetNTVOptional()
-{
-    MarkNativeAsOptional("pckg_GetPackage");
-    MarkNativeAsOptional("pckg_SetPackage");
-    MarkNativeAsOptional("pckg_HasPackage");
-    MarkNativeAsOptional("pckg_IsVerified");
-    MarkNativeAsOptional("pckg_SetArtifact");
-    MarkNativeAsOptional("pckg_RemoveArtifact");
-    MarkNativeAsOptional("pckg_GetArtifact");
-    MarkNativeAsOptional("pckg_HasArtifact");
-}
-#endif
