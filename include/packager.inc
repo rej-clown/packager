@@ -17,8 +17,6 @@ methodmap Packager < Handle
     public static native bool SetArtifact(int i, const char[] a, Json o);
 };
 
-// native bool Packager.HasPackage(Packager this, int i);
-
 // Возвращает пакет со всеми ключами клиента (JSONObject)
 // По-умолчанию доступны поля: "auth" - Steam2, "id" - UserId
 #pragma deprecated Use methodmap instead
@@ -29,7 +27,7 @@ stock Handle       pckg_GetPackage(int iClient) {
 // Перезаписывает пакет клиента на value (JSONObject)
 // repLevel - ContextLevels (enum)
 #pragma deprecated Use methodmap instead
-stock bool         pckg_SetPackage(int iClient, Handle value, any repLevel) {
+stock bool         pckg_SetPackage(int iClient, Handle value, any repLevel = 0) {
     Packager.SetPackage(iClient, view_as<JsonObject>(value));
 }
 
@@ -47,13 +45,13 @@ stock bool         pckg_IsVerified(int iClient) {
 
 // Добавлет артефакт к пакету клиента по ключу (JSON)
 #pragma deprecated Use methodmap instead
-stock bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value, any repLevel) {
+stock bool         pckg_SetArtifact(int iClient, const char[] artifact, Handle value, any repLevel = 0) {
     return Packager.SetArtifact(iClient, artifact, view_as<Json>(value));
 }
 
 // Удаляет артефакт по ключу
 #pragma deprecated Use methodmap instead
-stock bool         pckg_RemoveArtifact(int iClient, const char[] artifact, any repLevel) {
+stock bool         pckg_RemoveArtifact(int iClient, const char[] artifact, any repLevel = 0) {
     Packager.RemoveArtifact(iClient, artifact);
     return true;
 }

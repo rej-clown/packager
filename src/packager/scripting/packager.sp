@@ -79,7 +79,7 @@ public void OnClientAuthorized(int iClient, const char[] auth)
         return;
 
     if(!packager.CreatePackage(iClient))
-        SetFailState("Cmon ?");
+        SetFailState("Something went wrong:/");
     
     Call_StartForward(fwdPackageAvailable);
     Call_PushCell(iClient);

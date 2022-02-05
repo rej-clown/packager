@@ -168,10 +168,8 @@ stock char[] viewIdxAsChar(int i)
 stock char[] GetClientAuthIdEx(int idx)
 {
     char out[66];
-    if(!idx)
-        out = "STEAM_ID_SERVER";
 
-    if(!out[0] && !GetClientAuthId(idx, AuthId_Engine, out, sizeof(out)))
+    if(!GetClientAuthId(idx, AuthId_Engine, out, sizeof(out)))
         out = NULL_STRING;
     
     return out;
