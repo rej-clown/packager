@@ -155,9 +155,6 @@ methodmap Packager < JsonObject
     
 };
 
-
-
-
 stock char[] viewIdxAsChar(int i)
 {
     char out[4];
@@ -169,8 +166,11 @@ stock char[] GetClientAuthIdEx(int idx)
 {
     char out[66];
 
-    if(!GetClientAuthId(idx, AuthId_Engine, out, sizeof(out)))
+    if(idx && !GetClientAuthId(idx, AuthId_Engine, out, sizeof(out)))
         out = NULL_STRING;
     
+    if(!idx)
+        out = "STEAM_ID_SERVER";
+
     return out;
 }

@@ -1,7 +1,5 @@
 #pragma newdecls required
 
-// #define UTIL_MACRO
-
 #include <jansson>
 
 public Plugin myinfo = 
@@ -9,18 +7,18 @@ public Plugin myinfo =
 	name = "Packager <json>",
 	author = "rej.chev",
 	description = "...",
-	version = "1.2.0",
+	version = "1.2.1",
 	url = "discord.gg/ChTyPUG"
 };
 
 bool g_bLate;
 
+#include "packager/methodmap.sp"
+
+Packager packager;
 GlobalForward
     fwdPackageUpdate,
     fwdPackageAvailable;
-
-#include "packager/methodmap.sp"
-Packager packager;
 
 #include "packager/forwards.sp"
 #include "packager/natives.sp"
@@ -58,11 +56,9 @@ public void OnPluginStart() {
 
     if(g_bLate) {
         g_bLate = false;
-        for(int i = 1; i <= MaxClients; i++) {
-            if(IsClientInGame(i) && IsClientAuthorized(i)) {
+        for(int i = 1; i <= MaxClients; i++)
+            if(IsClientInGame(i) && IsClientAuthorized(i))
                 OnClientAuthorized(i, GetClientAuthIdEx(i));
-            }
-        }
     }
 }
 
