@@ -59,6 +59,8 @@ public any Native_Remove(Handle h, int a) {
 
     if(!packager.HasArtifact(GetNativeCell(1), art))
         OnPackageUpdated(h, GetNativeCell(1));
+
+    return 0;
 }
 
 public any Native_GetArtifact(Handle h, int a) {

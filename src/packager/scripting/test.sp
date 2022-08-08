@@ -18,8 +18,8 @@ public void pckg_OnPackageAvailable(int iClient) {
     Json o;
     if(!iClient) {
         for(int i = 1; i <= MAXPLAYERS; i++) {
-            if(!pckg_HasPackage(i))
-                pckg_SetPackage(i, (o = new Json("{}")), 0);
+            if(!Packager.HasPackage(i))
+                Packager.SetPackage(i, (o = new Json("{}")));
 
             delete o;
         }
@@ -32,10 +32,10 @@ public void pckg_OnPackageAvailable(int iClient) {
 
     char dump[1024];
     for(int i; i <= MaxClients; i++) {
-        if(!pckg_HasPackage(i)) 
+        if(!Packager.HasPackage(i)) 
             continue;
 
-        pckg_SetArtifact(
+        Packager.SetArtifact(
             i, 
             "test", 
             (o = (new JsonBuilder("{}"))
@@ -45,12 +45,12 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .SetString("valu", "who are u?")
                     .SetFloat("pi", 3.15)
                     .Build()
-            ), 0
+            )
         );
 
         delete o;
 
-        pckg_SetArtifact(
+        Packager.SetArtifact(
             i, 
             "test2", 
             (o = (new JsonBuilder("[]"))
@@ -60,12 +60,12 @@ public void pckg_OnPackageAvailable(int iClient) {
                     .PushString("guse")
                     .PushFloat(3.14)
                     .Build()
-            ), 0
+            )
         );
 
         delete o;
 
-        o = asJSON(pckg_GetPackage(i));
+        o = asJSON(Packager.GetPackage(i));
         o.ToString(dump, sizeof(dump), JSON_INDENT(4));
 
         LogMessage("Test package (client: %d): \n%s", i, dump);
@@ -73,7 +73,7 @@ public void pckg_OnPackageAvailable(int iClient) {
         delete o;
     }
 
-    o = asJSON(pckg_GetPackage(0));
+    o = asJSON(Packager.GetPackage(0));
     o.ToString(dump, sizeof(dump), JSON_INDENT(4));
 
     LogMessage("Test package (client: %d): \n%s", 0, dump);

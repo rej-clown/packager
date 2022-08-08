@@ -7,7 +7,7 @@ public Plugin myinfo =
 	name = "Packager <json>",
 	author = "rej.chev",
 	description = "...",
-	version = "1.2.1",
+	version = "1.3.0",
 	url = "discord.gg/ChTyPUG"
 };
 
@@ -23,18 +23,15 @@ GlobalForward
 #include "packager/forwards.sp"
 #include "packager/natives.sp"
 
-
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
-
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) 
+{
     CreateNative("Packager.GetPackage", Native_GetPackage);
     CreateNative("Packager.SetPackage", Native_SetPackage);
     CreateNative("Packager.HasPackage", Native_HasPackage);
-    // CreateNative("Packager.", Native_IsVerified);
     CreateNative("Packager.GetArtifact", Native_GetArtifact);
     CreateNative("Packager.SetArtifact", Native_SetArtifact);
     CreateNative("Packager.HasArtifact", Native_HasArtifact);
     CreateNative("Packager.RemoveArtifact", Native_Remove);
-
 
     fwdPackageUpdate = new GlobalForward(
         "pckg_OnPackageUpdated", 
@@ -49,9 +46,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     RegPluginLibrary("packager");
 
     g_bLate = late;
+    return APLRes_Success;
 }
 
-public void OnPluginStart() {
+public void OnPluginStart() 
+{
     packager = new Packager();
 
     if(g_bLate) {
