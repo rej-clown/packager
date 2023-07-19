@@ -1,13 +1,11 @@
 #pragma newdecls required
 
-#include <jansson>
-
 public Plugin myinfo = 
 {
 	name = "Packager <json>",
 	author = "rej.chev",
-	description = "...",
-	version = "1.3.0",
+	description = "Runtime json based cache",
+	version = "2.0.0",
 	url = "discord.gg/ChTyPUG"
 };
 
@@ -26,12 +24,13 @@ GlobalForward
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) 
 {
     CreateNative("Packager.GetPackage", Native_GetPackage);
-    CreateNative("Packager.SetPackage", Native_SetPackage);
-    CreateNative("Packager.HasPackage", Native_HasPackage);
-    CreateNative("Packager.GetArtifact", Native_GetArtifact);
-    CreateNative("Packager.SetArtifact", Native_SetArtifact);
-    CreateNative("Packager.HasArtifact", Native_HasArtifact);
-    CreateNative("Packager.RemoveArtifact", Native_Remove);
+ 
+    CreateNative("Package.GetArtifact", Native_GetArtifact);
+    CreateNative("Package.SetArtifact", Native_SetArtifact);
+    CreateNative("Package.HasArtifact", Native_HasArtifact);
+    CreateNative("Package.RemoveArtifact", Native_RemoveArtifact);
+    CreateNative("Package.Artifacts.get", Native_Artifacts);
+    CreateNative("Package.Owner.get", Native_PackageOwner);
 
     fwdPackageUpdate = new GlobalForward(
         "pckg_OnPackageUpdated", 
@@ -63,7 +62,7 @@ public void OnPluginStart()
 
 public void OnMapStart() 
 {
-    OnClientAuthorized(0, NULL_STRING);
+    OnClientAuthorized(0, "STEAM_ID_SERVER");
 }
 
 public void OnClientAuthorized(int iClient, const char[] auth) 
@@ -73,9 +72,9 @@ public void OnClientAuthorized(int iClient, const char[] auth)
     if(iClient && IsClientInGame(iClient) && (IsFakeClient(iClient) || IsClientSourceTV(iClient)))
         return;
 
-    if(!packager.CreatePackage(iClient))
-        SetFailState("Something went wrong:/");
-    
+    // true
+    packager.SetPackage(iClient, new Package(iClient, auth));
+        
     Call_StartForward(fwdPackageAvailable);
     Call_PushCell(iClient);
     Call_Finish();

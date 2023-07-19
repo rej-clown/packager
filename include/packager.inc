@@ -25,76 +25,68 @@ forward void            pckg_OnPackageAvailable(int iClient);
 forward void            pckg_OnPackageUpdated(Handle plugin, int iClient);
 
 
-methodmap Packager < Handle
-{
-    /*
-    * @desc 
-    * 
-    * @param i - Client index
-    * 
-    * @return Package(must be freed) or null
-    */
-    public static native Json GetPackage(int i);
-    
-    /*
-    * @desc 
-    * 
-    * @param i - Client index
-    * @param o - Json object with any data
-    * 
-    * @return true on success
-    */
-    public static native bool SetPackage(int i, Json o);
+methodmap Package < Handle {
 
     /*
     * @desc 
     * 
-    * @param i - Client index
-    * 
-    * @return true if package exists
-    */
-    public static native bool HasPackage(int i); 
-    
-    /*
-    * @desc 
-    * 
-    * @param i - Client index
-    * @param a - An artifact name 
+    * @param sig - An artifact name 
     * 
     * @return Artifact(must be freed or null)
     */
-    public static native Json GetArtifact(int i, const char[] a);
+    public native Json GetArtifact(const char[] sig);
 
     /*
     * @desc 
     * 
-    * @param i - Client index
-    * @param a - An artifact name
-    * @param o - Json object with any data
-    * 
-    * @return true on success
-    */
-    public static native bool SetArtifact(int i, const char[] a, Json o);
-    
-    /*
-    * @desc 
-    * 
-    * @param i - Client index
-    * @param a - An artifact name
+    * @param sig - An artifact name
     * 
     * @return true if exists
     */
-    public static native bool HasArtifact(int i, const char[] a);
-    
+    public native bool HasArtifact(const char[] sig);
+
     /*
     * @desc 
     * 
-    * @param i - Client index
-    * @param a - An artifact name
+    * @param sig                - An artifact name
+    * @param value              - Json object with any data
+    * @param freeValueOnSuccess - Free second param on success
+    *
+    * @return true on success
+    */
+    public native bool SetArtifact(const char[] sig, const Json value, bool freeValueOnSuccess = false);
+
+    /*
+    * @desc 
+    * 
+    * @param sig - An artifact name
     * 
     * @noreturn
     */
-    public static native void RemoveArtifact(int i, const char[] a);
+    public native void RemoveArtifact(const char[] a);
+
+    // client artifacts count
+    property int Artifacts {
+        public native get();
+    }
+
+    // package owner user id
+    property int Owner {
+        public native get();
+    }
+}
+
+
+methodmap Packager < Handle
+{
+    /*
+    * @desc Personal client package on session period (must not freed)
+    * 
+    * @param i - client index
+    * 
+    * @return Package or null
+    */
+    public native static Package GetPackage(int i);
 };
 
 public SharedPlugin __pl_packager= 

@@ -1,158 +1,140 @@
-// #define VERIFY_SUCCESS              0x00
-// #define VERIFY_INVALID_VALUE_IDX    0x01
-// #define VERIFY_INVALID_VALUE_AUTH   0x02
-// #define VERIFY_INVALID_TYPE_IDX     0x04
-// #define VERIFY_INVALID_TYPE_AUTH    0x06
-// #define VERIFY_
+#define JSON_INCLUDE_BUILDER
 
-methodmap Package < JsonObject
+#include <jansson>
+
+methodmap Package < Handle
 {
-    public Package(int idx, const char[] v)
-    {
-        Json o;
-        if(!JSON_TYPE_EQUAL((o = new Json(v)), JSON_OBJECT))
-            delete o;
-
-        if(o)
-        {
-            asJSONO(o).SetString("auth", GetClientAuthIdEx(idx));
-            asJSONO(o).SetInt("idx", (idx) ? GetClientUserId(idx) : 0);
-        }
+    public Package(int iClient, const char[] auth) {
         
-        return view_as<Package>(o);
+        int owner;
+        if(iClient)
+            owner = GetClientUserId(iClient);
+
+        return view_as<Package>(
+            (new JsonBuilder("{}"))
+                .SetString("auth", auth)
+                .SetInt("owner", owner)
+                .Build()
+        );
     }
 
     public bool HasArtifact(const char[] k)
     {
-        return this.HasKey(k) && (
-            JSONO_TYPE_EQUAL(this, k, JSON_OBJECT) ||
-            JSONO_TYPE_EQUAL(this, k, JSON_ARRAY)
-        )
+        JsonType type = asJSONO(this).GetType(k);
+
+        return type == JObjectType || type == JArrayType;
+    }
+
+    public bool SetArtifact(const char[] key, const Json value, bool freeValue = false) {
+        
+        bool success;
+        if((success = asJSONO(this).Set(key, value)) && freeValue)
+            delete value;
+
+        return success;
+    }
+
+    public Json GetArtifact(const char[] key) {
+        return asJSONO(this).Get(key);
+    }
+
+    property JsonType Type {
+        public get() {
+            return asJSON(this).Type;
+        }
+    }
+
+    property int Artifacts {
+        public get() {
+            return asJSONO(this).Size;
+        }
+    }
+
+    property int Owner {
+        public get() {
+            
+            int owner;
+            if(!asJSONO(this).TryGetInt("owner", owner))
+                owner = -1;
+
+            if(owner == -1)
+                LogError("Package(%x) structure is broken: field 'owner' is missing", this);
+
+            return owner;
+        }
     }
 
     public void RemoveArtifact(const char[] k)
     {
         if(this.HasArtifact(k))
-            this.Remove(k);
+            asJSONO(this).Remove(k);
     }
-
-    // TODO: the next gen :/
-    // public int IsVerified(int idx){
-    //     int userid;
-    //     char auth[66];
-
-    //     if(this )
-
-    //     if(!()); 
-    //         return
-    // }
 }
 
-methodmap Packager < JsonObject
+methodmap Packager < Handle
 {
-    public Packager()
-    {
-        return view_as<Packager>(new Json("{}"));
+    public Packager() {
+        return view_as<Packager>(new ArrayList());
     }
 
-    public bool HasPackage(int i)
-    {
-        return this.HasKey(viewIdxAsChar(i));
+    public int FindPackage(int i) {
+        if(i < 0 || i > MAXPLAYERS)
+            return -1;
+
+        return view_as<ArrayList>(this).FindValue(i);
     }
 
-    public bool SetPackage(int i, Package o)
-    {
-        if(!o || JSON_TYPE_EQUAL(o, JSON_NULL))
+    public bool SetPackage(int i, const Package o) {
+        if(i < 0 || i > MAXPLAYERS)
             return false;
 
-        return this.Set(viewIdxAsChar(i), o);
-    }
-
-    public Package GetPackage(int i)
-    {
-        return (this.HasPackage(i)) 
-                    ? view_as<Package>(this.Get(viewIdxAsChar(i)))
-                    : view_as<Package>(null); 
-    }
-
-    public bool CreatePackage(int i, const char[] v = "{}")
-    {
-        // use .SetPackage() if package already exist
-        if(i < 0 || i >= MAXPLAYERS || this.HasPackage(i))
+        if(!o || o.Type != JObjectType)
             return false;
-        
-        Package p;
-        if(!(p = new Package(i, v)))
-            return false;
-        
-        bool b = this.SetPackage(i, p);
-        delete p;
 
-        return b;
+        this.RemovePackage(i);
+
+        view_as<ArrayList>(this).Push(i);
+        view_as<ArrayList>(this).Push(o);
+
+        return true;
     }
 
-    public bool HasArtifact(int i, const char[] artifact)
-    {
-        if(!this.HasPackage(i))
-            return false;
-        
-        Package o = this.GetPackage(i);
-
-        bool out = o.HasArtifact(artifact);
-
-        delete o;
-        return out;
-    }
-
-    public void RemovePackage(int i)
-    {
-        if(this.HasPackage(i))
-            this.Remove(viewIdxAsChar(i));
-    }
-
-    public Json GetArtifact(int i, const char[] artifact)
-    {
-        if(!this.HasPackage(i) || !this.HasArtifact(i, artifact))
+    public Package GetPackage(int i) {
+        int pos;
+        if((pos = this.FindPackage(i)) == -1)
             return null;
 
-        Package o = this.GetPackage(i);
-
-        Json a = o.Get(artifact);
-        delete o; 
-
-        return a;
+        if(pos+1 == view_as<ArrayList>(this).Length) {
+            view_as<ArrayList>(this).Erase(pos);
+            return null;
+        }
+            
+        return view_as<ArrayList>(this).Get(pos + 1); 
     }
 
-    public bool SetArtifact(int i, const char[] artifact, Json v)
-    {
-        if(!this.HasPackage(i))
-            return false;
-
-        Package o = this.GetPackage(i);
-        o.Set(artifact, v);
-
-        bool b = this.SetPackage(i, o);
-        delete o; 
-
-        return b;
-    }
-
-    
-
-    public void RemoveArtifact(int i, const char[] artifact)
-    {
-        if(!this.HasPackage(i))
+    public void RemovePackage(int i) {
+        int pos;
+        if((pos = this.FindPackage(i)) == -1)
             return;
-        
-        Package p = this.GetPackage(i);
-        p.RemoveArtifact(artifact);
 
-        this.SetPackage(i, p);
+        if(pos+1 == view_as<ArrayList>(this).Length) {
+            view_as<ArrayList>(this).Erase(pos);
+            return;
+        }
 
-        delete p;
+        delete asJSON(view_as<ArrayList>(this).Get(pos + 1));
+
+        view_as<ArrayList>(this).Erase(pos + 1);
+        view_as<ArrayList>(this).Erase(pos);
     }
 
-    
+    public void Clear() {
+        
+        for(int i = 1, s = view_as<ArrayList>(this).Length; i < s; i+=2)
+            delete asJSON(view_as<ArrayList>(this).Get(i));
+
+        view_as<ArrayList>(this).Clear();
+    }    
 };
 
 stock char[] viewIdxAsChar(int i)
