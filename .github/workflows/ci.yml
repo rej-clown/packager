@@ -31,14 +31,24 @@ jobs:
           path: jansson
           submodules: recursive
 
-      - name: Prepare Build Path
+      - name: Setup Working Directory
         run: |
-          mkdir output
-          ls -a
-          mkdir output/sourcemod
+          mkdir -p output/sourcemod/plugins
           cp -r -f build/src/packager/* output/sourcemod
           cp -r -f build/include  output/sourcemod/scripting 
           cp -r -f jansson/pawn/scripting/include output/sourcemod/scripting
-
-          ls -a -R output/
           
+      - name: Build Packager
+        run: |
+          spcomp build/src/packager/packager.sp -o2 -v2 -i output/sourcemod/scripting/include -o output/sourcemod/plugins/packager.smx
+
+      - name: Remove Jansson Sig
+        working-directory: output/sourcemod/scripting/include
+        run: |
+          -rm jansson.inc
+
+      - name: Upload Packager
+        uses: actions/upload-artifact@v3
+        with: 
+          name: upload-${{ runner.sm-version }}-${{ runner.jansson-version }}
+          path: output
