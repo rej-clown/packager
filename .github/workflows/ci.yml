@@ -36,7 +36,6 @@ jobs:
       - name: Setup Working Directory
         run: |
           mkdir -p packager/sourcemod/plugins
-          ls -a -R
           cp -r -f src/packager/* packager/sourcemod/
           cp -r -f include  packager/sourcemod/scripting/ 
           cp -r -f jansson/pawn/scripting/include packager/sourcemod/scripting
@@ -68,8 +67,9 @@ jobs:
 
       - name: Package
         run: |
+          ls -a
           version=`echo $GITHUB_REF | sed "s/refs\/tags\///"`
-          7z a packager-${ version }.${{ github.run_number }}-linux.zip ./Linux/*
+          7z a packager-${version}.${{ github.run_number }}-linux.zip ./Linux/*
 
       - name: Release
         uses: svenstaro/upload-release-action@v2
