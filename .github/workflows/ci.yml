@@ -34,6 +34,7 @@ jobs:
       - name: Prepare Build Path
         working-directory: build
         run: |
+          mkdir output
           mkdir output/sourcemod
           cp -r -f ./src/packager/* output/sourcemod
           cp -r -f ./include  output/sourcemod/scripting 
