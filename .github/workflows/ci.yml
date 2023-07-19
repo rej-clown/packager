@@ -37,14 +37,14 @@ jobs:
         run: |
           mkdir -p packager/sourcemod/plugins
           ls -a -R
-          cp -r -f build/src/packager/* packager/sourcemod/
-          cp -r -f build/include  packager/sourcemod/scripting/ 
+          cp -r -f src/packager/* packager/sourcemod/
+          cp -r -f include  packager/sourcemod/scripting/ 
           cp -r -f jansson/pawn/scripting/include packager/sourcemod/scripting
           
       - name: Build Packager
         run: |
           ls -a -R
-          spcomp build/src/packager/scripting/packager.sp -O2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
+          spcomp src/packager/scripting/packager.sp -O2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
 
       - name: Remove Jansson Sig
         working-directory: packager/sourcemod/scripting/include
