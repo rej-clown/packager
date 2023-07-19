@@ -1,22 +1,21 @@
 <h1 align="center">Session data packager</h1>
-<p align="center">
-    <a href="#requirements"><img src="https://img.shields.io/badge/sourcemod-v.1.11-blue" /></a>
-    <a href="https://discord.gg/cFZ97Mzrjy" target="_blank"><img src="https://img.shields.io/discord/494942123548868609" /></a>
-</p>
+<div align="center">
 
-____
-<br>
+[![CI](https://github.com/rej-clown/packager/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rej-clown/packager/actions/workflows/ci.yml)
+[![Discord](https://img.shields.io/discord/494942123548868609?logo=discord&logoColor=%23959da5&color=%235865F2)](https://discord.gg/cFZ97Mzrjy)
+[![Downloads](https://img.shields.io/github/downloads/rej-clown/packager/total?color=%2332c955)]()
+[![LICENSE](https://img.shields.io/github/license/rej-clown/packager)](LICENSE)
+</div>
 
-## Description
+
+## About
 The simple data packager based on json
 
-## Requirements:
--------------
+### Required dependencies
 - Sourcemod 1.11 ([Windows](http://sourcemod.net/latest.php?os=windows&version=1.11) | [Linux](http://sourcemod.net/latest.php?os=linux&version=1.11))
 - [Jansson 1.x.x ( >= 1.6.0 )](https://github.com/rej-clown/sm-jansson/releases)
 
-## Game support
----------
+### Supported SDK
 - [x] Counter-Strike: Global Offensive
 - [x] Counter-Strike: Source (Open Beta)
 - [x] Team Fortress 2
