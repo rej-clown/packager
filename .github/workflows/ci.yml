@@ -52,7 +52,7 @@ jobs:
       - name: Upload Packager
         uses: actions/upload-artifact@v3
         with: 
-          name: upload-${{ runner.sm-version }}-${{ runner.jansson-version }}
+          name: packager-${{ runner.sm-version }}-${{ runner.jansson-version }}
           path: packager
 
   release:
@@ -62,19 +62,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Download artifacts
         uses: actions/download-artifact@v3
 
       - name: Package
         run: |
-          ls -a
-          version=`echo $GITHUB_REF | sed "s/refs\/tags\///"`
-          7z a packager-${version}.${{ github.run_number }}-linux.zip ./Linux/*
-
-      - name: Release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: '*.zip'
-          tag: ${{ github.ref }}
-          file_glob: true
+          ls -R
