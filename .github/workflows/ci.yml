@@ -43,7 +43,7 @@ jobs:
       - name: Build Packager
         run: |
           ls -a -R
-          spcomp build/src/packager/packager.sp -O2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
+          spcomp build/src/packager/scripting/packager.sp -O2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
 
       - name: Remove Jansson Sig
         working-directory: packager/sourcemod/scripting/include
