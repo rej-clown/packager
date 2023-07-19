@@ -60,6 +60,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     needs: build
     runs-on: ubuntu-latest
+    matrix:
+        sm-version: [ '1.11.x' ]
 
     steps:
       - uses: actions/checkout@v3
@@ -69,7 +71,8 @@ jobs:
 
       - name: Package artifact
         run: |
-          7z a jansson-${{ matrix.sm-version }}.${{ github.run_number }}.zip ./packager-${{ matrix.sm-version }}
+          ls -R
+          7z a packager-${{ matrix.sm-version }}.${{ github.run_number }}.zip ./packager-${{ matrix.sm-version }}
       
       - name: Release
         uses: svenstaro/upload-release-action@v2
