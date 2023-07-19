@@ -33,17 +33,17 @@ jobs:
 
       - name: Setup Working Directory
         run: |
-          mkdir -p output/sourcemod/plugins
-          cp -r -f build/src/packager/* output/sourcemod
-          cp -r -f build/include  output/sourcemod/scripting 
-          cp -r -f jansson/pawn/scripting/include output/sourcemod/scripting
+          mkdir -p packager/sourcemod/plugins
+          cp -r -f build/src/packager/* packager/sourcemod
+          cp -r -f build/include  packager/sourcemod/scripting 
+          cp -r -f jansson/pawn/scripting/include packager/sourcemod/scripting
           
       - name: Build Packager
         run: |
-          spcomp build/src/packager/packager.sp -o2 -v2 -ioutput/sourcemod/scripting/include -o output/sourcemod/plugins/packager.smx
+          spcomp build/src/packager/packager.sp -o2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
 
       - name: Remove Jansson Sig
-        working-directory: output/sourcemod/scripting/include
+        working-directory: packager/sourcemod/scripting/include
         run: |
           -rm jansson.inc
 
@@ -51,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with: 
           name: upload-${{ runner.sm-version }}-${{ runner.jansson-version }}
-          path: output
+          path: packager
