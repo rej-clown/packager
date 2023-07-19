@@ -52,7 +52,7 @@ jobs:
       - name: Upload Packager
         uses: actions/upload-artifact@v3
         with: 
-          name: packager-${{ matrix.sm-version }}-${{ matrix.jansson-version }}
+          name: packager-${{ matrix.sm-version }}
           path: packager
 
   release:
@@ -67,6 +67,14 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
 
-      - name: Package
+      - name: Package artifact
         run: |
-          ls -R
+          7z a jansson-${{ matrix.sm-version }}.${{ github.run_number }}.zip ./packager-${{ matrix.sm-version }}
+      
+      - name: Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: '*.zip'
+          tag: ${{ github.ref }}
+          file_glob: true
