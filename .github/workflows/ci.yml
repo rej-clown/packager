@@ -31,8 +31,13 @@ jobs:
           path: jansson
           submodules: recursive
 
-      - name: LS
+      - name: Prepare Build Path
+        working-directory: build
         run: |
-          cd jansson
-          ls -a
+          mkdir output/sourcemod
+          cp -r -f ./src/packager/* output/sourcemod
+          cp -r -f ./include  output/sourcemod/scripting 
+          cp -r -f jansson/pawn/scripting/include output/sourcemod/scripting
+
+          ls -a -R output/
           
