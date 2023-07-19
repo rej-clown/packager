@@ -52,7 +52,7 @@ jobs:
       - name: Upload Packager
         uses: actions/upload-artifact@v3
         with: 
-          name: packager-${{ runner.sm-version }}-${{ runner.jansson-version }}
+          name: packager-${{ matrix.sm-version }}-${{ matrix.jansson-version }}
           path: packager
 
   release:
