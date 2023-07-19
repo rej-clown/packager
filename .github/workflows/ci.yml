@@ -49,7 +49,7 @@ jobs:
       - name: Remove Jansson Sig
         working-directory: packager/sourcemod/scripting/include
         run: |
-          -rm jansson.inc
+          rm jansson.inc
 
       - name: Upload Packager
         uses: actions/upload-artifact@v3
