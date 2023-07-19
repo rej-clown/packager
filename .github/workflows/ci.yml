@@ -73,8 +73,7 @@ jobs:
 
       - name: Package artifact
         run: |
-          ls -R
-          7z a packager-${{ matrix.sm-version }}.${{ github.run_number }}.zip ./packager-${{ matrix.sm-version }}
+          7z a packager-${{ matrix.sm-version }}.${{ github.run_number }}.zip ./packager-${{ matrix.sm-version }}/*
       
       - name: Release
         uses: svenstaro/upload-release-action@v2
