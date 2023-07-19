@@ -36,8 +36,9 @@ jobs:
       - name: Setup Working Directory
         run: |
           mkdir -p packager/sourcemod/plugins
-          cp -r -f build/src/packager/* packager/sourcemod
-          cp -r -f build/include  packager/sourcemod/scripting 
+          ls -a -R
+          cp -r -f build/src/packager/* packager/sourcemod/
+          cp -r -f build/include  packager/sourcemod/scripting/ 
           cp -r -f jansson/pawn/scripting/include packager/sourcemod/scripting
           
       - name: Build Packager
