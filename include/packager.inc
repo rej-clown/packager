@@ -77,7 +77,7 @@ methodmap Package < Handle {
 }
 
 
-methodmap Packager < Handle
+methodmap Packager
 {
     /*
     * @desc Personal client package on session period (must not freed)
@@ -86,7 +86,7 @@ methodmap Packager < Handle
     * 
     * @return Package or null
     */
-    public native static Package GetPackage(int i);
+    public static native Package GetPackage(int i);
 };
 
 public SharedPlugin __pl_packager= 
