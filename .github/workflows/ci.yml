@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sm-version: '1.11.x'
-        jansson-version: 'v-1.6.0'
+        sm-version: [ '1.11.x' ]
+        jansson-version: [ 'v-1.6.0' ]
 
     steps:
       - name: Checkout
