@@ -33,6 +33,6 @@ jobs:
 
       - name: LS
         run: |
-          cd build
+          cd jansson
           ls -a
           
