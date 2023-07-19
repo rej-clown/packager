@@ -18,6 +18,8 @@ jobs:
         with:
           path: build
 
+      - uses: actions/checkout@v3
+
       - name: Setup SourcePawn
         uses: rumblefrog/setup-sp@master
         with:
@@ -40,6 +42,7 @@ jobs:
           
       - name: Build Packager
         run: |
+          ls -a -R
           spcomp build/src/packager/packager.sp -O2 -v2 -ipackager/sourcemod/scripting/include -o packager/sourcemod/plugins/packager.smx
 
       - name: Remove Jansson Sig
