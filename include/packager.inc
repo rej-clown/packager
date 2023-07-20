@@ -5,6 +5,18 @@
 
 #include <jansson>
 
+enum FreeEvent {
+
+    // memory is not freeing
+    freeAfterRainOnThursday = 0,
+
+    // memory freeing on success
+    freeOnSuccess,
+    
+    // memory freeing anyway
+    freeAnyway
+}
+
 /*
 * @desc 
 * 
@@ -50,11 +62,12 @@ methodmap Package < Handle {
     * 
     * @param sig                - An artifact name
     * @param value              - Json object with any data
-    * @param freeValueOnSuccess - Free second param on success
+    * @param free               - Free second param (see FreeEvent)
+    *                                   
     *
     * @return true on success
     */
-    public native bool SetArtifact(const char[] sig, const Json value, bool freeValueOnSuccess = false);
+    public native bool SetArtifact(const char[] sig, const Json value, FreeEvent free = freeAfterRainOnThursday);
 
     /*
     * @desc 

@@ -1,3 +1,17 @@
+#include <jansson>
+
+enum FreeEvent {
+
+    // memory is not freeing
+    freeAfterRainOnThursday = 0,
+
+    // memory freeing on success
+    freeOnSuccess,
+    
+    // memory freeing anyway
+    freeAnyway
+}
+
 public any Native_GetPackage(Handle h, int a) {
     
     return packager.GetPackage(GetNativeCell(1));
@@ -6,16 +20,19 @@ public any Native_GetPackage(Handle h, int a) {
 public any Native_SetArtifact(Handle h, int a) {
     
     Package pck = view_as<Package>(GetNativeCell(1));
+    Json json = GetNativeCell(3);
 
     static char name[MAX_NAME_LENGTH];
     GetNativeString(2, name, sizeof(name));
     
     bool success;
-    if((success = pck.SetArtifact(
-        name, 
-        GetNativeCell(3), 
-        GetNativeCell(4))
-    )) OnPackageUpdated(h, GetClientOfUserId(pck.Owner));
+    if((success = pck.SetArtifact(name, json))) 
+        OnPackageUpdated(h, GetClientOfUserId(pck.Owner));
+
+    FreeEvent event = view_as<FreeEvent>(GetNativeCell(4));
+
+    if(event == freeAnyway || (event == freeOnSuccess && success))
+        delete json;
 
     return success;    
 }

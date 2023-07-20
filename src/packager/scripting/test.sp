@@ -17,10 +17,9 @@ public void pckg_OnPackageAvailable(int iClient) {
                 .SetString("valu", "who are u?")
                 .SetFloat("pi", 3.15)
                 .Build()
-        )
+        ),
+        freeAnyway
     );
-
-    delete o;
 
     pck.SetArtifact( 
         "test2", 
@@ -30,15 +29,11 @@ public void pckg_OnPackageAvailable(int iClient) {
                 .PushString("guse")
                 .PushFloat(3.14)
                 .Build()
-        )
+        ),
+        freeAnyway
     );
 
-    delete o;
-
     o = asJSON(pck);
-    o.Dump(dump, sizeof(dump), JsonPretty(4)|JsonFloatPrecision(3));
-
-    LogMessage("Test package (client: %d): \n%s", iClient, dump);
-
-    delete o;
+    if(o.Dump(dump, sizeof(dump), JsonPretty(4)|JsonFloatPrecision(3), true))
+        LogMessage("Test package (client: %d): \n%s", iClient, dump);
 }

@@ -5,7 +5,7 @@ public Plugin myinfo =
 	name = "Packager <json>",
 	author = "rej.chev",
 	description = "Runtime json based cache",
-	version = "2.0.0",
+	version = "2.1.0",
 	url = "discord.gg/ChTyPUG"
 };
 

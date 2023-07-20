@@ -25,13 +25,8 @@ methodmap Package < Handle
         return type == JObjectType || type == JArrayType;
     }
 
-    public bool SetArtifact(const char[] key, const Json value, bool freeValue = false) {
-        
-        bool success;
-        if((success = asJSONO(this).Set(key, value)) && freeValue)
-            delete value;
-
-        return success;
+    public bool SetArtifact(const char[] key, const Json value) {
+        return asJSONO(this).Set(key, value);
     }
 
     public Json GetArtifact(const char[] key) {
