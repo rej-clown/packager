@@ -13,7 +13,7 @@ The simple data packager based on json
 
 ### Required dependencies
 - Sourcemod 1.11 ([Windows](http://sourcemod.net/latest.php?os=windows&version=1.11) | [Linux](http://sourcemod.net/latest.php?os=linux&version=1.11))
-- [Jansson 1.x.x ( >= 1.6.0 )](https://github.com/rej-clown/sm-jansson/releases)
+- [Jansson 1.7.x](https://github.com/rej-clown/sm-jansson/releases)
 
 ### Supported SDK
 - [x] Counter-Strike: Global Offensive
